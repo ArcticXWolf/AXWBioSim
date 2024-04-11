@@ -21,7 +21,10 @@ impl Generation {
         agents: Vec<Agent>,
         world_settings: WorldSettings,
     ) -> Self {
-        let world = World::new(world_settings);
+        let mut world = World::new(world_settings);
+        for agent in &agents {
+            world.spawn_agent(agent);
+        }
 
         Self {
             index,
@@ -34,8 +37,12 @@ impl Generation {
 
     pub fn step(&mut self) {
         for agent in self.agents.iter_mut() {
-            let (new_x, new_y) = agent.step();
-            if self.world.make_move(agent.x, agent.y, new_x, new_y) {
+            let agent_intention = agent.process_neural_net();
+
+            if let Some(move_intention) = agent_intention.move_intention {
+                let (new_x, new_y) =
+                    self.world
+                        .validate_move_intention(agent.x, agent.y, move_intention);
                 agent.set_pos(new_x, new_y);
             }
         }
@@ -58,8 +65,9 @@ impl Generation {
     }
 
     pub fn save_current_state(&self, save_path: &str) {
+        let _ = std::fs::create_dir_all(format!("{}/{:03}/", save_path, self.index)).unwrap();
         let file_path = format!(
-            "{}/{:03}_{:03}.png",
+            "{}/{:03}/{:03}.png",
             save_path, self.index, self.current_age
         );
         let mut imgbuf: ImageBuffer<Rgb<u8>, Vec<_>> = ImageBuffer::new(

@@ -1,4 +1,5 @@
 pub mod agent;
+pub mod agent_neural_net;
 pub mod death_criterium;
 pub mod generation;
 pub mod simulation;
@@ -19,8 +20,8 @@ fn main() {
         generation_age: 100,
         agents_per_generation: 1000,
         world_settings,
-        num_generations: 100,
-        generations_to_save: vec![0, 99],
+        num_generations: 50,
+        generations_to_save: vec![0, 1, 9, 19, 29, 39, 49],
         save_path: String::from("target/images"),
         death_criterium: Box::new(death_crit),
     };
