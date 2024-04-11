@@ -1,3 +1,5 @@
+use crate::agent::Agent;
+
 #[derive(Debug, Clone)]
 pub struct WorldSettings {
     pub width: usize,
@@ -16,18 +18,21 @@ impl World {
         Self { settings, board }
     }
 
+    pub fn spawn_agent(&mut self, agent: &Agent) {
+        self.board[agent.y * self.settings.width + agent.x] = true;
+    }
+
     pub fn make_move(&mut self, old_x: usize, old_y: usize, new_x: usize, new_y: usize) -> bool {
         if new_x >= self.settings.width || new_y >= self.settings.height {
             return false;
         }
 
-        if let Some(true) = self.board.get(new_y * self.settings.width + new_x) {
+        if *self.board.get(new_y * self.settings.width + new_x).unwrap() {
             return false;
         }
 
-        self.board
-            .insert(old_y * self.settings.width + old_x, false);
-        self.board.insert(new_y * self.settings.width + new_x, true);
+        self.board[old_y * self.settings.width + old_x] = false;
+        self.board[new_y * self.settings.width + new_x] = true;
         return true;
     }
 }

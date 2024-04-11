@@ -4,7 +4,7 @@ use crate::{
 };
 use image::{ImageBuffer, Rgb};
 use imageproc::drawing::draw_filled_circle_mut;
-const TILE_SIZE: usize = 10;
+const TILE_SIZE: usize = 6;
 
 pub struct Generation {
     pub index: usize,
@@ -67,11 +67,7 @@ impl Generation {
             (self.world.settings.height * TILE_SIZE) as u32,
         );
         for agent in &self.agents {
-            let color = Rgb::from([
-                (agent.hash >> 16) as u8,
-                (agent.hash >> 8) as u8,
-                (agent.hash) as u8,
-            ]);
+            let color = Rgb::from(agent.color());
             draw_filled_circle_mut(
                 &mut imgbuf,
                 (

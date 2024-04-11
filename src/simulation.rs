@@ -52,11 +52,21 @@ impl Simulation {
                 .settings
                 .death_criterium
                 .survivors(self.current_generation().agents.clone());
-            // TODO: populate agents from previous generation
+
+            let mut agents = Vec::with_capacity(self.settings.agents_per_generation);
+            for i in 0..self.settings.agents_per_generation {
+                let parents_id = i * 2 % survivors.len();
+                let parents = &survivors[parents_id..parents_id + 1];
+                agents.push(Agent::spawn_from_parents(
+                    &self.settings.world_settings,
+                    parents,
+                ));
+            }
+
             self.generations.push(Generation::new(
                 self.generations.len(),
                 self.settings.generation_age,
-                survivors,
+                agents,
                 self.settings.world_settings.clone(),
             ));
         }

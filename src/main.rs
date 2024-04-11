@@ -16,11 +16,11 @@ fn main() {
         max_y: world_settings.height,
     };
     let simulation_settings = simulation::SimulationSettings {
-        generation_age: 20,
+        generation_age: 100,
         agents_per_generation: 1000,
         world_settings,
-        num_generations: 10,
-        generations_to_save: vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        num_generations: 100,
+        generations_to_save: vec![0, 99],
         save_path: String::from("target/images"),
         death_criterium: Box::new(death_crit),
     };
